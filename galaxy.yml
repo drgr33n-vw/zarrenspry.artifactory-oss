@@ -20,16 +20,16 @@ dependencies:
   community.general: ">=4.0.1"
 
 # The URL of the originating SCM repository
-repository: TBA
+repository: https://github.com/drgr33n-vw/zarrenspry.artifactory-oss.git
 
 # The URL to any online docs
-documentation: TBA
+documentation: https://github.com/drgr33n-vw/zarrenspry.artifactory-oss.git
 
 # The URL to the homepage of the collection/project
-homepage: TBA
+homepage: https://github.com/drgr33n-vw/zarrenspry.artifactory-oss.git
 
 # The URL to the collection issue tracker
-issues: TBA
+issues: https://github.com/drgr33n-vw/zarrenspry.artifactory-oss/issues
 
 build_ignore: []
 
