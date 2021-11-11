@@ -1,0 +1,83 @@
+- name: "Check required variables"
+  ansible.builtin.fail: msg="Variable '{{ item }}' is not defined"
+  when: item not in vars
+  loop:
+    - certificate
+    - certificate_key
+    - server_name
+
+- name: Install prerequisite packages
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Install nginx after dependency installation
+  become: true
+  ansible.builtin.package:
+    name: nginx
+    state: present
+  register: install_nginx
+  retries: 5
+  delay: 60
+  until: install_nginx is success
+
+- name: Configure main nginx conf file.
+  become: true
+  ansible.builtin.copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Configure redirect nginx conf
+  become: true
+  ansible.builtin.copy:
+    src: redirect_http_to_https.conf
+    dest: /etc/nginx/conf.d/redirect_http_to_https.conf
+    owner: root
+    group: root
+    mode: 0755
+  when: redirect_http_to_https_enabled | bool
+  notify: restart nginx
+
+- name: Configure the artifactory nginx conf
+  become: true
+  ansible.builtin.template:
+    src: artifactory.conf.j2
+    dest: /etc/nginx/conf.d/artifactory.conf
+    owner: root
+    group: root
+    mode: 0755
+  notify: restart nginx
+
+- name: Ensure nginx dir exists
+  become: true
+  ansible.builtin.file:
+    path: "/var/opt/jfrog/nginx/ssl"
+    state: directory
+    mode: 0644
+
+- name: Configure certificate
+  become: true
+  ansible.builtin.template:
+    src: certificate.pem.j2
+    dest: "/var/opt/jfrog/nginx/ssl/cert.pem"
+    mode: 0644
+  notify: restart nginx
+
+- name: Ensure pki exists
+  become: true
+  ansible.builtin.file:
+    path: "/etc/pki/tls"
+    state: directory
+    mode: 0644
+
+- name: Configure key
+  become: true
+  ansible.builtin.template:
+    src: certificate.key.j2
+    dest: "/etc/pki/tls/cert.key"
+    mode: 0644
+  notify: restart nginx
+
+- name: restart nginx
+  ansible.builtin.meta: flush_handlers

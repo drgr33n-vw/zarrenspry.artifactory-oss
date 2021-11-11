@@ -1,0 +1,5 @@
+---
+# defaults file for artifactory_nginx
+env: development
+server_name: "{{ env }}.artifactory.com"
+nginx_daemon: nginx

@@ -1,0 +1,96 @@
+- name: Import EPEL GPG public key
+  become: true
+  ansible.builtin.rpm_key:
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ version }}
+    state: present
+  vars:
+    version: "{{ ansible_distribution_major_version }}"
+
+- name: Install EPEL repository
+  become: true
+  ansible.builtin.yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ version }}.noarch.rpm
+    state: present
+  vars:
+    version: "{{ ansible_distribution_major_version }}"
+  when: ansible_distribution in ['CentOS', 'RedHat']
+
+- name: Install prerequisite packages
+  become: true
+  ansible.builtin.yum:
+    name:
+      - acl
+      - sudo
+      - wget
+      - perl
+    state: present
+
+- name: Install python3-psycopg2
+  become: true
+  ansible.builtin.yum:
+    name: python3-psycopg2
+    state: present
+  when: ansible_distribution_major_version == '8'
+
+- name: Install python2-psycopg2
+  become: true
+  ansible.builtin.yum:
+    name: python-psycopg2
+    state: present
+  when: ansible_distribution_major_version == '7'
+
+- name: Fixup some locale issues
+  become: true
+  ansible.builtin.lineinfile:
+    dest: /etc/locale.conf
+    line: "{{ item }}"
+    state: present
+    create: yes
+    mode: 0644
+  loop:
+    - LANG=en_us.UTF-8
+    - LANGUAGE=en_us.UTF-8
+
+- name: Import PostgreSQL GPG public key
+  become: true
+  ansible.builtin.rpm_key:
+    key: https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
+    state: present
+    validate_certs: false
+
+
+- name: Install PostgreSQL repository
+  become: true
+  ansible.builtin.yum:
+    name: "{{ base }}/reporpms/EL-{{ version }}-x86_64/{{ repo_file_name }}"
+    state: present
+    validate_certs: false
+  vars:
+    base: https://download.postgresql.org/pub/repos/yum
+    version: "{{ ansible_distribution_major_version }}"
+    repo_file_name: pgdg-redhat-repo-latest.noarch.rpm
+
+- name: Disable PostgreSQL module
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/dnf/modules.d/postgresql.module
+    owner: root
+    group: root
+    mode: 0644
+    content: |
+      [postgresql]
+      name=postgresql
+      stream=
+      profiles=
+      state=disabled
+  when:
+    - ansible_os_family == 'RedHat'
+    - ansible_distribution_major_version | int == 8
+
+- name: Install PostgreSQL packages
+  become: true
+  ansible.builtin.yum:
+    name:
+      - postgresql{{ postgres_server_pkg_version }}-server
+      - postgresql{{ postgres_server_pkg_version }}-contrib
+    state: present

@@ -1,0 +1,35 @@
+---
+namespace: zarrenspry
+name: artifactory_oss
+version: 1.0.0
+readme: README.md
+authors:
+  - Zarren Spry <zarrenspry@gmail.com>
+
+description: Installs Artifactory OSS and all required components
+license:
+  - MIT License'
+license_file: 'LICENSE'
+
+tags:
+  - artifactory
+  - oss
+  - repository
+
+dependencies:
+  community.general: ">=4.0.1"
+
+# The URL of the originating SCM repository
+repository: TBA
+
+# The URL to any online docs
+documentation: TBA
+
+# The URL to the homepage of the collection/project
+homepage: TBA
+
+# The URL to the collection issue tracker
+issues: TBA
+
+build_ignore: []
+

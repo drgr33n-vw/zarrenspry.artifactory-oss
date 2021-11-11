@@ -1,0 +1,13 @@
+- name: Install prerequisite packages
+  become: true
+  ansible.builtin.package:
+    name: "{{ selinux_policy_package }}"
+    state: present
+
+- name: Configure SELinux context 
+  become: yes
+  community.general.sefcontext:
+    target: "{{ jfrog_home_directory }}/artifactory/app/bin(/.*)?"
+    setype: bin_t
+    state: present
+  when: ansible_selinux.status == 'enabled'
