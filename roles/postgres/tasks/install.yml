@@ -58,7 +58,6 @@
     timeout: 120
     sleep: 10
 
-#TODO Not idempotent
 - name: Create user
   become: true
   become_user: postgres

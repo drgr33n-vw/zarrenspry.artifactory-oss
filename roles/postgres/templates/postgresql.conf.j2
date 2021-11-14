@@ -97,7 +97,7 @@ max_connections = {{ postgres_server_max_connections }}			# (change requires res
 #ssl_key_file = 'server.key'		# (change requires restart)
 #ssl_ca_file = ''			# (change requires restart)
 #ssl_crl_file = ''			# (change requires restart)
-#password_encryption = on
+password_encryption = scram-sha-256
 #db_user_namespace = off
 #row_security = on
 
@@ -629,11 +629,11 @@ timezone = 'Europe/Berlin'
 					# encoding
 
 # These settings are initialized by initdb, but they can be changed.
-lc_messages = 'en_US.UTF-8'			# locale for system error message
+lc_messages = '{{ postgres_locale }}'			# locale for system error message
 					# strings
-lc_monetary = 'en_US.UTF-8'			# locale for monetary formatting
-lc_numeric = 'en_US.UTF-8'			# locale for number formatting
-lc_time = 'en_US.UTF-8'				# locale for time formatting
+lc_monetary = '{{ postgres_locale }}'			# locale for monetary formatting
+lc_numeric = '{{ postgres_locale }}'			# locale for number formatting
+lc_time = '{{ postgres_locale }}'				# locale for time formatting
 
 # default configuration for text search
 default_text_search_config = 'pg_catalog.english'

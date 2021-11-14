@@ -10,5 +10,5 @@
 - name: Ensure UTF-8 locale exists
   become: true
   community.general.locale_gen:
-    name: en_US.UTF-8
+    name: "{{ lang }}"
     state: present

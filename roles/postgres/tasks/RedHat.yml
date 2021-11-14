@@ -48,8 +48,8 @@
     create: yes
     mode: 0644
   loop:
-    - LANG=en_us.UTF-8
-    - LANGUAGE=en_us.UTF-8
+    - "LANG={{ lang }}"
+    - "LANGUAGE={{ lang }}"
 
 - name: Import PostgreSQL GPG public key
   become: true

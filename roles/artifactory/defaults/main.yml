@@ -1,6 +1,6 @@
 ---
 # defaults file for artifactory
-
+lang: en_US.UTF-8
 # The version of artifactory to install
 artifactory_version: 7.27.10
 
