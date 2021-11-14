@@ -151,17 +151,6 @@
     - artifactory_binarystore | length > 0
   notify: restart artifactory
 
-- name: Configure artifactory license(s)
-  become: true
-  ansible.builtin.template:
-    src: artifactory.cluster.license.j2
-    dest: "{{ artifactory_home }}/var/etc/artifactory/artifactory.cluster.license"
-    mode: 0644
-  when:
-   - artifactory_licenses is defined
-   - artifactory_licenses | length > 0
-  notify: restart artifactory
-
 - name: Check if database driver exists
   become: true
   ansible.builtin.stat:
